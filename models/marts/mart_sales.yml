@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: mart_sales
+    description: >
+      Monthly revenue rollup for the sales-insights product. One row per
+      calendar month; total_revenue must reconcile with the commerce platform's
+      completed-order totals per the intent's acceptance criteria.
+    columns:
+      - name: sales_month
+        description: First day of the calendar month.
+        tests:
+          - not_null
+          - unique
+      - name: total_revenue
+        description: Sum of order amounts for revenue-bearing orders in the month.
+        tests:
+          - not_null
+      - name: order_count
+        description: Number of revenue-bearing orders in the month.
+        tests:
+          - not_null
+      - name: _loaded_at
+        description: Timestamp when this row was loaded by dbt.
+        tests:
+          - not_null
+      - name: _dbt_invocation_id
+        description: dbt invocation UUID for the run that produced this row.
+        tests:
+          - not_null
+      - name: _git_sha
+        description: Git revision of the code that produced this row.
+        tests:
+          - not_null

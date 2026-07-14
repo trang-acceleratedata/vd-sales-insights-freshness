@@ -1,0 +1,33 @@
+# Agent-facing dbt profile — SANDBOX ONLY.
+#
+# One target: `dev`, the ephemeral Fabric lakehouse, authenticated through the
+# studio credential broker (token_credential). There is deliberately NO usable
+# prod target here — setup materializes prod through a setup-only profile and
+# deletes it, so the agent can only verify fixes in the sandbox. Env vars are
+# injected via `uv run --env-file .env dbt ...` (running-dbt-in-sandbox).
+sales_insights:
+  target: dev
+  outputs:
+    dev:
+      type: fabricspark
+      method: livy
+      authentication: token_credential
+      credential_class: "vibedata_studio_azure_cred_broker.StudioAzureCredBroker"
+      credential_kwargs:
+        broker_url: "{{ env_var('VD_CREDENTIAL_BROKER_URL') }}"
+        credential_file: "{{ env_var('VD_CREDENTIAL_FILE') }}"
+      endpoint: https://api.fabric.microsoft.com/v1
+      workspaceid: "{{ env_var('EPHEMERAL_WORKSPACE_ID') }}"
+      workspace_name: "{{ env_var('EPHEMERAL_WORKSPACE_NAME') }}"
+      lakehouse: "{{ env_var('EPHEMERAL_LAKEHOUSE_NAME') }}"
+      lakehouseid: "{{ env_var('EPHEMERAL_LAKEHOUSE_ID') }}"
+      schema: "{{ env_var('EPHEMERAL_SCHEMA') }}"
+      high_concurrency: false
+      reuse_session: true
+      session_id_file: ./.livy-session-id.txt
+      spark_config:
+        name: "{{ env_var('DBT_JOB_NAME') }}"
+      connect_retries: 1
+      connect_timeout: 10
+      session_start_timeout: "{{ env_var('DBT_FABRIC_SESSION_START_TIMEOUT', '600') | int }}"
+      threads: 5

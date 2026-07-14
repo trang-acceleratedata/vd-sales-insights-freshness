@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw commerce data landed by the orders dlt pipeline into the lakehouse"
+    schema: src_orders
+    tables:
+      - name: orders
+        description: "One row per customer order as received from the commerce platform."
+        columns:
+          - name: order_id
+            description: "Natural key from the commerce platform."
+            tests:
+              - not_null
+              - unique
+          - name: order_status
+            description: "Lifecycle status assigned by the commerce platform."
+            tests:
+              - accepted_values:
+                  values: ['pending', 'shipped', 'delivered', 'returned', 'cancelled']
+          - name: amount
+            description: "Order value in EUR."
+            tests:
+              - not_null

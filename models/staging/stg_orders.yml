@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: >
+      One row per revenue-bearing customer order. Statuses are lower-cased and
+      the model admits only statuses that count toward revenue per the intent's
+      acceptance rules.
+    columns:
+      - name: order_id
+        description: Natural key from the commerce platform.
+        tests:
+          - not_null
+          - unique
+      - name: order_status
+        description: Lower-cased fulfilment status.
+        tests:
+          - not_null
+      - name: amount
+        description: Order value in EUR.
+        tests:
+          - not_null
