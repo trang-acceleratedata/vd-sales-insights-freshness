@@ -16,3 +16,4 @@ __pycache__/
 .openhands/
 .profiles-setup/
 .e2e-marker
+ingestion/.dlt/secrets.toml
